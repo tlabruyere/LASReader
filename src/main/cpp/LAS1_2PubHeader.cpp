@@ -6,6 +6,7 @@
 #include "LAS1_2PubHeader.h"
 
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -50,13 +51,58 @@ LAS1_2PubHeader::~LAS1_2PubHeader()
 }
 
 
-void LAS1_2PubHeader::Read( std::istream& inStream )
+void LAS1_2PubHeader::Read( istream& inStream )
 {
     char* buff = new char[PUB_HEADER_BYTE_SIZE];
-    inStream.read(buff, PUB_HEADER_BYTE_SIZE);
+//    inStream.read(buff, FILE_SIGNATURE_SIZE );
+
+    inStream.read( buff, FILE_SIGNATURE_SIZE );
+//    buff[FILE_SIGNATURE_SIZE+1] = '\0';
+//    cout << "buff = " << buff << endl;
     mFileSignature = string(buff, buff+FILE_SIGNATURE_SIZE );
-    mFileSourceID = buff[5];
-    mFileSourceID = double(buff[6], buff[14]);
+//    cout << "size = " << mFileSignature.size() <<endl;
+    inStream.read(reinterpret_cast<char*>(&mFileSourceID), sizeof(unsigned short) );
+    inStream.read(reinterpret_cast<char*>(&mGlobalEncoding), sizeof(unsigned short) );
+    inStream.read(reinterpret_cast<char*>(&mProjectIDGUIDdata1), sizeof(unsigned long) );
+    inStream.read(reinterpret_cast<char*>(&mProjectIDGUIDdata2), sizeof(unsigned short) );
+    inStream.read(reinterpret_cast<char*>(&mProjectIDGUIDdata3), sizeof(unsigned short) );
+    // get project id data 4
+    for( int i =0;i<mProjectIDGUIDdata4.size();i++)
+    {
+        inStream.read(reinterpret_cast<char*>(&mProjectIDGUIDdata4[i]), sizeof(unsigned char)*PROJECT_ID_GUID_DATA_4_SIZE );
+    }
+    inStream.read(reinterpret_cast<char*>( &mVersionMajor ), sizeof( mVersionMajor ));
+    inStream.read(reinterpret_cast<char*>( &mVersionMinor ), sizeof( mVersionMinor ));
+
+    inStream.read( buff, SYSTEM_IDENTIFIER_SIZE );
+    mSystemIdentifier = string(buff, buff+SYSTEM_IDENTIFIER_SIZE );
+    inStream.read( buff, SYSTEM_IDENTIFIER_SIZE );
+    mGeneratingSoftware = string( buff, buff+GENERATING_SOFTWARE_SIZE );
+
+    inStream.read(reinterpret_cast<char*>( &mFileCreationDayOfYear), sizeof( mFileCreationDayOfYear ));
+    inStream.read(reinterpret_cast<char*>( &mFileCreationYear), sizeof( mFileCreationYear ));
+    inStream.read(reinterpret_cast<char*>( &mHeaderSize), sizeof( mHeaderSize ));
+    inStream.read(reinterpret_cast<char*>( &mOffsetToPointData), sizeof( mOffsetToPointData ));
+    inStream.read(reinterpret_cast<char*>( &mNumberOfVariableLengthRecords), sizeof( mNumberOfVariableLengthRecords ));
+    inStream.read(reinterpret_cast<char*>( &mPointDataFormatID), sizeof( mPointDataFormatID ));
+    inStream.read(reinterpret_cast<char*>( &mPointDataRecordLength), sizeof( mPointDataRecordLength ));
+    inStream.read(reinterpret_cast<char*>( &mNumberOfPointRecord), sizeof( mNumberOfPointRecord ));
+    for( int i =0;i<mNumberOfPointsByReturn.size();i++)
+    {
+        inStream.read(reinterpret_cast<char*>( &mNumberOfPointsByReturn[i]), sizeof( unsigned long ));
+    }
+    inStream.read(reinterpret_cast<char*>( &mXScaleFactor), sizeof( mXScaleFactor ));
+    inStream.read(reinterpret_cast<char*>( &mYScaleFactor), sizeof( mYScaleFactor ));
+    inStream.read(reinterpret_cast<char*>( &mZScaleFactor), sizeof( mZScaleFactor ));
+    inStream.read(reinterpret_cast<char*>( &mXOffset), sizeof( mXOffset ));
+    inStream.read(reinterpret_cast<char*>( &mYOffset), sizeof( mYOffset ));
+    inStream.read(reinterpret_cast<char*>( &mZOffset), sizeof( mZOffset ));
+    inStream.read(reinterpret_cast<char*>( &mXMax), sizeof( mXMax ));
+    inStream.read(reinterpret_cast<char*>( &mXMin), sizeof( mXMin ));
+    inStream.read(reinterpret_cast<char*>( &mYMax), sizeof( mYMax ));
+    inStream.read(reinterpret_cast<char*>( &mYMin), sizeof( mYMin ));
+    inStream.read(reinterpret_cast<char*>( &mZMax), sizeof( mZMax ));
+    inStream.read(reinterpret_cast<char*>( &mZMin), sizeof( mZMin ));
 }
 
 void LAS1_2PubHeader::Write( std::ostream& outStream )

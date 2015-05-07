@@ -95,10 +95,13 @@ TEST_F( LAS1_2PubHeaderTest, mutatorsAndAccessors)
 
 TEST_F( LAS1_2PubHeaderTest, readFile)
 {
-    ifstream FileStream( "/Users/telabru/Downloads/ARRA-NRCS_Illinois_2010_000061/ARRA-NRCS_Illinois_2010_000061.las");
+    ifstream FileStream( "/Users/telabru/Downloads/ARRA-NRCS_Illinois_2010_000061/ARRA-NRCS_Illinois_2010_000061.las", ios::in );// |ios::binary);
+//    if(FileStream.is_open())
+//        cout << " i am open" <<endl;
     LAS1_2PubHeader pubHeader;
     pubHeader.Read( FileStream );
-    pubHeader.ToString();
+    FileStream.close();
+
     // just print 
     cout << pubHeader.ToString() << endl;
 }
