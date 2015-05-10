@@ -6,6 +6,7 @@ include_directories(${GTEST_INCLUDE_DIRS})
 include_directories(include)
 
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++0x")
+enable_testing()
 
 set( LASReader_PUBLIC_HEADER
     include/LAS1_2VarLenHeader.h
@@ -38,6 +39,6 @@ add_test(TestLASReader TestLASReader)
 
 #install( TARGETS ${LASReader_PUBLIC_HEADER} DESTINATION include)
 file( COPY ${LASReader_PUBLIC_HEADER} DESTINATION include)
-install( TARGETS ${LASReader} DESTINATION lib)
-install( TARGETS ${TestLASReader} DESTINATION testbin)
+install( TARGETS LASReader DESTINATION lib)
+install( TARGETS TestLASReader DESTINATION testbin)
 
