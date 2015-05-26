@@ -17,9 +17,9 @@ class LAS1_2PubHeader : public GenericHeader {
  public:
     LAS1_2PubHeader();
     ~LAS1_2PubHeader();
-    void Read( std::istream& inStream ); 
-    void Write( std::ostream& outStream ); 
-    std::string ToString(); 
+    void Read(std::istream& inStream); 
+    void Write(std::ostream& outStream) const; 
+    std::string ToString() const;
 
     std::string FileSignature() const {return mFileSignature;}
     void FileSignature(const std::string& pFileSignature) {

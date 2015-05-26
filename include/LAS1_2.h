@@ -10,20 +10,24 @@
 #include <LAS1_2PubHeader.h>
 #include <LAS1_2VarLenHeader.h>
 #include <string>
+#include <vector>
 
-class LAS1_2 : public GenericHeader
-{
-    public:
-        LAS1_2();
-        ~LAS1_2();
-        void Read( std::istream& inStream ); 
-        void Write( std::ostream& outStream ); 
-        std::string ToString();
+class LAS1_2 : public GenericHeader {
+ public:
+    LAS1_2();
+    ~LAS1_2();
+    void Read(std::istream& inStream);
+    void Write(std::ostream& outStream) const;
+    std::string ToString() const;
 
-    private:
-        LAS1_2PubHeader mPubHeader;
-        LAS1_2VarLenHeader mVarLenHeader;
-        
+    LAS1_2PubHeader publicHeader() const {return mPubHeader;}
+    std::vector<LAS1_2VarLenHeader> varLenHeaders() const {
+        return mVarLenHeaders;
+    }
+
+ private:
+    LAS1_2PubHeader mPubHeader;
+    std::vector<LAS1_2VarLenHeader> mVarLenHeaders;
 };
 
 #endif

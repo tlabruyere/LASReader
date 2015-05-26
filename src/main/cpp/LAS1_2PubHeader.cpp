@@ -17,7 +17,7 @@ LAS1_2PubHeader::LAS1_2PubHeader() :
     mProjectIDGUIDdata1(),
     mProjectIDGUIDdata2(),
     mProjectIDGUIDdata3(),
-    mProjectIDGUIDdata4( PROJECT_ID_GUID_DATA_4_SIZE ),
+    mProjectIDGUIDdata4(PROJECT_ID_GUID_DATA_4_SIZE),
     mVersionMajor(),
     mVersionMinor(),
     mSystemIdentifier(),
@@ -30,7 +30,7 @@ LAS1_2PubHeader::LAS1_2PubHeader() :
     mPointDataFormatID(),
     mPointDataRecordLength(),
     mNumberOfPointRecord(),
-    mNumberOfPointsByReturn( NUMBER_OF_POINTS_BY_RETURN_SIZE ),
+    mNumberOfPointsByReturn(NUMBER_OF_POINTS_BY_RETURN_SIZE),
     mXScaleFactor(),
     mYScaleFactor(),
     mZScaleFactor(),
@@ -42,75 +42,120 @@ LAS1_2PubHeader::LAS1_2PubHeader() :
     mYMax(),
     mYMin(),
     mZMax(),
-    mZMin()
-{
+    mZMin() {
 }
 
-LAS1_2PubHeader::~LAS1_2PubHeader()
-{
+LAS1_2PubHeader::~LAS1_2PubHeader() {
 }
 
-
-void LAS1_2PubHeader::Read( istream& inStream )
-{
+void LAS1_2PubHeader::Read(istream& inStream) {
     char* buff = new char[PUB_HEADER_BYTE_SIZE];
-//    inStream.read(buff, FILE_SIGNATURE_SIZE );
-
-    inStream.read( buff, FILE_SIGNATURE_SIZE );
-//    buff[FILE_SIGNATURE_SIZE+1] = '\0';
-//    cout << "buff = " << buff << endl;
-    mFileSignature = string(buff, buff+FILE_SIGNATURE_SIZE );
-//    cout << "size = " << mFileSignature.size() <<endl;
-    inStream.read(reinterpret_cast<char*>(&mFileSourceID), sizeof(unsigned short) );
-    inStream.read(reinterpret_cast<char*>(&mGlobalEncoding), sizeof(unsigned short) );
-    inStream.read(reinterpret_cast<char*>(&mProjectIDGUIDdata1), sizeof(unsigned long) );
-    inStream.read(reinterpret_cast<char*>(&mProjectIDGUIDdata2), sizeof(unsigned short) );
-    inStream.read(reinterpret_cast<char*>(&mProjectIDGUIDdata3), sizeof(unsigned short) );
+    inStream.read(buff, SIZE_OF_CHAR*FILE_SIGNATURE_SIZE);
+    mFileSignature = string(buff, buff+SIZE_OF_CHAR*FILE_SIGNATURE_SIZE);
+    inStream.read(
+        reinterpret_cast<char*>(&mFileSourceID),
+        SIZE_OF_SHORT);
+    inStream.read(
+        reinterpret_cast<char*>(&mGlobalEncoding),
+        SIZE_OF_SHORT);
+    inStream.read(
+        reinterpret_cast<char*>(&mProjectIDGUIDdata1),
+        SIZE_OF_LONG);
+    inStream.read(
+        reinterpret_cast<char*>(&mProjectIDGUIDdata2),
+        SIZE_OF_SHORT);
+    inStream.read(
+        reinterpret_cast<char*>(&mProjectIDGUIDdata3),
+        SIZE_OF_SHORT);
     // get project id data 4
-    for( int i =0;i<mProjectIDGUIDdata4.size();i++)
-    {
-        inStream.read(reinterpret_cast<char*>(&mProjectIDGUIDdata4[i]), sizeof(unsigned char)*PROJECT_ID_GUID_DATA_4_SIZE );
+    inStream.read(buff,SIZE_OF_CHAR*8);
+    for (int i =0;i<PROJECT_ID_GUID_DATA_4_SIZE;i++) {
+        mProjectIDGUIDdata4[i] = buff[i];
     }
-    inStream.read(reinterpret_cast<char*>( &mVersionMajor ), sizeof( mVersionMajor ));
-    inStream.read(reinterpret_cast<char*>( &mVersionMinor ), sizeof( mVersionMinor ));
+    inStream.read(
+        reinterpret_cast<char*>(&mVersionMajor),
+        SIZE_OF_CHAR);
+    inStream.read(
+        reinterpret_cast<char*>(&mVersionMinor),
+        SIZE_OF_CHAR);
 
-    inStream.read( buff, SYSTEM_IDENTIFIER_SIZE );
-    mSystemIdentifier = string(buff, buff+SYSTEM_IDENTIFIER_SIZE );
-    inStream.read( buff, SYSTEM_IDENTIFIER_SIZE );
-    mGeneratingSoftware = string( buff, buff+GENERATING_SOFTWARE_SIZE );
+    inStream.read(buff, SIZE_OF_CHAR*SYSTEM_IDENTIFIER_SIZE);
+    mSystemIdentifier = string(buff, buff+SIZE_OF_CHAR*SYSTEM_IDENTIFIER_SIZE);
+    inStream.read(buff, SIZE_OF_CHAR*SYSTEM_IDENTIFIER_SIZE);
+    mGeneratingSoftware = string(buff, buff+SIZE_OF_CHAR*GENERATING_SOFTWARE_SIZE);
 
-    inStream.read(reinterpret_cast<char*>( &mFileCreationDayOfYear), sizeof( mFileCreationDayOfYear ));
-    inStream.read(reinterpret_cast<char*>( &mFileCreationYear), sizeof( mFileCreationYear ));
-    inStream.read(reinterpret_cast<char*>( &mHeaderSize), sizeof( mHeaderSize ));
-    inStream.read(reinterpret_cast<char*>( &mOffsetToPointData), sizeof( mOffsetToPointData ));
-    inStream.read(reinterpret_cast<char*>( &mNumberOfVariableLengthRecords), sizeof( mNumberOfVariableLengthRecords ));
-    inStream.read(reinterpret_cast<char*>( &mPointDataFormatID), sizeof( mPointDataFormatID ));
-    inStream.read(reinterpret_cast<char*>( &mPointDataRecordLength), sizeof( mPointDataRecordLength ));
-    inStream.read(reinterpret_cast<char*>( &mNumberOfPointRecord), sizeof( mNumberOfPointRecord ));
-    for( int i =0;i<mNumberOfPointsByReturn.size();i++)
-    {
-        inStream.read(reinterpret_cast<char*>( &mNumberOfPointsByReturn[i]), sizeof( unsigned long ));
+    inStream.read(
+        reinterpret_cast<char*>(&mFileCreationDayOfYear),
+        SIZE_OF_SHORT);
+    inStream.read(
+        reinterpret_cast<char*>(&mFileCreationYear),
+        SIZE_OF_SHORT);
+    inStream.read(
+        reinterpret_cast<char*>(&mHeaderSize),
+        SIZE_OF_SHORT);
+    inStream.read(
+        reinterpret_cast<char*>(&mOffsetToPointData),
+        SIZE_OF_LONG);
+    inStream.read(reinterpret_cast<char*>(
+        &mNumberOfVariableLengthRecords),
+        SIZE_OF_LONG);
+    inStream.read(
+        reinterpret_cast<char*>(&mPointDataFormatID),
+        SIZE_OF_CHAR);
+    inStream.read(
+        reinterpret_cast<char*>(&mPointDataRecordLength),
+        SIZE_OF_SHORT);
+    inStream.read(
+        reinterpret_cast<char*>(&mNumberOfPointRecord),
+        SIZE_OF_LONG);
+//    inStream.read(buff, SIZE_OF_CHAR*FILE_SIGNATURE_SIZE);
+    for (int i =0;i<NUMBER_OF_POINTS_BY_RETURN_SIZE;i++) {
+        inStream.read(
+            reinterpret_cast<char*>(&mNumberOfPointsByReturn[i]),
+            SIZE_OF_LONG);
     }
-    inStream.read(reinterpret_cast<char*>( &mXScaleFactor), sizeof( mXScaleFactor ));
-    inStream.read(reinterpret_cast<char*>( &mYScaleFactor), sizeof( mYScaleFactor ));
-    inStream.read(reinterpret_cast<char*>( &mZScaleFactor), sizeof( mZScaleFactor ));
-    inStream.read(reinterpret_cast<char*>( &mXOffset), sizeof( mXOffset ));
-    inStream.read(reinterpret_cast<char*>( &mYOffset), sizeof( mYOffset ));
-    inStream.read(reinterpret_cast<char*>( &mZOffset), sizeof( mZOffset ));
-    inStream.read(reinterpret_cast<char*>( &mXMax), sizeof( mXMax ));
-    inStream.read(reinterpret_cast<char*>( &mXMin), sizeof( mXMin ));
-    inStream.read(reinterpret_cast<char*>( &mYMax), sizeof( mYMax ));
-    inStream.read(reinterpret_cast<char*>( &mYMin), sizeof( mYMin ));
-    inStream.read(reinterpret_cast<char*>( &mZMax), sizeof( mZMax ));
-    inStream.read(reinterpret_cast<char*>( &mZMin), sizeof( mZMin ));
+    inStream.read(
+        reinterpret_cast<char*>(&mXScaleFactor),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mYScaleFactor),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mZScaleFactor),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mXOffset),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mYOffset),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mZOffset),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mXMax),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mXMin),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mYMax),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mYMin),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mZMax),
+        SIZE_OF_DOUBLE);
+    inStream.read(
+        reinterpret_cast<char*>(&mZMin),
+        SIZE_OF_DOUBLE);
 }
 
-void LAS1_2PubHeader::Write( std::ostream& outStream )
-{
-} 
+void LAS1_2PubHeader::Write(std::ostream& outStream) const {
+}
 
-std::string LAS1_2PubHeader::ToString()
-{
+std::string LAS1_2PubHeader::ToString() const {
     stringstream ss;
     ss << "FileSignature: " << mFileSignature << "\n"
         << "FileSourceID: " << mFileSourceID << "\n"
@@ -119,7 +164,7 @@ std::string LAS1_2PubHeader::ToString()
         << "ProjectIDGUIDdata2: " << mProjectIDGUIDdata2 << "\n"
         << "ProjectIDGUIDdata3: " << mProjectIDGUIDdata3 << "\n"
         << "ProjectIDGUIDdata4: <";
-    for( int i =0; i<mProjectIDGUIDdata4.size()-1; i++)
+    for(int i =0; i<mProjectIDGUIDdata4.size()-1; i++)
     {
         ss << mProjectIDGUIDdata4[i] << ",";
     }
@@ -133,13 +178,12 @@ std::string LAS1_2PubHeader::ToString()
         << "FileCreationYear: " << mFileCreationYear << "\n"
         << "HeaderSize: " << mHeaderSize << "\n"
         << "OffsetToPointData: " << mOffsetToPointData << "\n"
-        << "NumberOfVariableLengthRecords;: " << mNumberOfVariableLengthRecords << "\n"
+        << "NumberOfVariableLengthRecords: " << mNumberOfVariableLengthRecords << "\n"
         << "PointDataFormatID: " << static_cast<int>(mPointDataFormatID) << "\n"
         << "PointDataRecordLength: " << mPointDataRecordLength << "\n"
         << "NumberOfPointRecord: " << mNumberOfPointRecord << "\n"
         << "NumberOfPointsByReturn: <";
-    for( int i =0; i<mNumberOfPointsByReturn.size()-1; i++)
-    {
+    for (int i =0; i<mNumberOfPointsByReturn.size()-1; i++) {
         ss << mNumberOfPointsByReturn[i] << ",";
     }
     ss << mNumberOfPointsByReturn[mNumberOfPointsByReturn.size()-1] << ">\n";

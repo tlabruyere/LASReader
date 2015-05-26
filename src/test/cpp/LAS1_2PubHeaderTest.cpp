@@ -11,13 +11,11 @@
 #include <iostream>
 #include <fstream>
 
-class LAS1_2PubHeaderTest : public ::testing::Test
-{
+class LAS1_2PubHeaderTest : public ::testing::Test {
 };
 
 using namespace std;
-TEST_F( LAS1_2PubHeaderTest, mutatorsAndAccessors)
-{
+TEST_F( LAS1_2PubHeaderTest, mutatorsAndAccessors) {
     LAS1_2PubHeader pubHeader;
 
     pubHeader.FileSignature( "LASF" );
@@ -95,8 +93,9 @@ TEST_F( LAS1_2PubHeaderTest, mutatorsAndAccessors)
 
 TEST_F( LAS1_2PubHeaderTest, readFile)
 {
-    ifstream FileStream( "/Users/telabru/Downloads/ARRA-NRCS_Illinois_2010_000061/ARRA-NRCS_Illinois_2010_000061.las", ios::in );// |ios::binary);
-//    if(FileStream.is_open())
+    std::ifstream FileStream(
+        "/Users/telabru/Downloads/ARRA-NRCS_Illinois_2010_000061/ARRA-NRCS_Illinois_2010_000061.las",
+        ios::in );// |ios::binary); //    if(FileStream.is_open())
 //        cout << " i am open" <<endl;
     LAS1_2PubHeader pubHeader;
     pubHeader.Read( FileStream );

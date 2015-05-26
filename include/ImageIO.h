@@ -6,9 +6,11 @@
 
 class ImageIO
 {
-    public: 
-        virtual void Read( std::istream& inStream ) = 0; 
-        virtual void Write( std::ostream& outStream ) = 0; 
+ public: 
+    virtual void Read(
+        std::istream& inStream ) = 0; 
+    virtual void Write( 
+        std::ostream& outStream ) const = 0; 
 };
 
 
