@@ -4,9 +4,11 @@
 // 
 /////////////////////////////////////////////////////////////////////////////// 
 
+#include <sstream>
+#include <iostream>
+
 #include "LAS1_2VarLenHeader.h"
 
-#include <sstream>
 
 using namespace std;
 
@@ -27,7 +29,18 @@ void LAS1_2VarLenHeader::Read(std::istream& inStream) {
         reinterpret_cast<char*>(&mReserved),
         SIZE_OF_SHORT);
     inStream.read(buff, SIZE_OF_CHAR*USER_ID_MAX_SIZE);
-    mUserID = string(buff, buff+SIZE_OF_CHAR*USER_ID_MAX_SIZE);
+    int i = 0;
+    for (i=0;i<SIZE_OF_CHAR*USER_ID_MAX_SIZE;i++) {
+        if (buff[i] == '\0') {
+//            cout << "fouund null at " << i <<endl;
+            cout << "break " << i << endl;
+            break;
+        }
+        cout << buff[i];
+    }
+//     mUserID = string(buff, buff+SIZE_OF_CHAR*USER_ID_MAX_SIZE);
+    mUserID = string(buff, buff+i);
+//    inStream.seekg(SIZE_OF_CHAR*USER_ID_MAX_SIZE-i+1);
     inStream.read(
         reinterpret_cast<char*>(&mRecordID), 
         SIZE_OF_SHORT);
@@ -35,7 +48,19 @@ void LAS1_2VarLenHeader::Read(std::istream& inStream) {
         reinterpret_cast<char*>(&mRecordLengthAfterHeader), 
         SIZE_OF_SHORT);
     inStream.read(buff, SIZE_OF_CHAR*DESCRIPTION_MAX_SIZE);
-    mDescription = string(buff, buff+SIZE_OF_CHAR*DESCRIPTION_MAX_SIZE);
+//    int i = 0;
+    for (i=0;i<SIZE_OF_CHAR*DESCRIPTION_MAX_SIZE;i++) {
+        if (buff[i] == '\0') {
+//            cout << "fouund null at " << i <<endl;
+            cout << "break" << endl;
+            break;
+        }
+        cout << buff[i];
+    }
+//    inStream.seekg(SIZE_OF_CHAR*DESCRIPTION_MAX_SIZE-i+1);
+
+    cout <<endl;
+    mDescription = string(buff, buff+i);
 }
 
 void LAS1_2VarLenHeader::Write( std::ostream& outStream ) const {
