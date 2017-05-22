@@ -4,8 +4,6 @@
 // 
 /////////////////////////////////////////////////////////////////////////////// 
 #include "LAS1_2.h" 
-#include <LAS1_2VarLenHeader.h>
-
 #include <sstream>
 
 using namespace std;
@@ -20,16 +18,10 @@ LAS1_2::~LAS1_2() {
 
 void LAS1_2::Read(std::istream& inStream) {
     mPubHeader.Read( inStream );
-
     for (int i=0;i<mPubHeader.NumberOfVariableLengthRecords();i++) {
         LAS1_2VarLenHeader varLenHeader;
         varLenHeader.Read(inStream);
         mVarLenHeaders.push_back(varLenHeader);
-        int bytesLeftAferHeader = 0;
-//        if ((bytesLeftAferHeader = (varLenHeader.RecordLengthAfterHeader()
-//            - LAS1_2VarLenHeader::VAR_HEADER_BYTE_SIZE)) >=0) {
-//            inStream.seekg(bytesLeftAferHeader);
-        }
     }
 }
 

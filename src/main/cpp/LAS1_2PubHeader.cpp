@@ -150,6 +150,7 @@ void LAS1_2PubHeader::Read(istream& inStream) {
     inStream.read(
         reinterpret_cast<char*>(&mZMin),
         SIZE_OF_DOUBLE);
+    delete [] buff;
 }
 
 void LAS1_2PubHeader::Write(std::ostream& outStream) const {

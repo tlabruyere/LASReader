@@ -32,14 +32,16 @@ class LAS1_2VarLenHeaderTest : public ::testing::Test {
 }
 
 TEST_F( LAS1_2VarLenHeaderTest, readFile) {
-    std::ifstream FileStream( "/Users/telabru/Downloads/ARRA-NRCS_Illinois_2010_000061/ARRA-NRCS_Illinois_2010_000061.las", ios::in );// |ios::binary);
-//    if(FileStream.is_open())
+    std::string file = "/Users/omegarain64/Downloads/ARRA-NRCS_Illinois_2010_000061.las";
+//    std::string file = "/Users/telabru/Downloads/ARRA-NRCS_Illinois_2010_000061/ARRA-NRCS_Illinois_2010_000061.las"
+    std::ifstream fileStream( file, ios::in );// |ios::binary);
+    ASSERT_TRUE(fileStream.is_open());
 //        cout << " i am open" <<endl;
-    LAS1_2 pubHeader;
-    pubHeader.Read( FileStream );
-    FileStream.close();
+    LAS1_2 las12;
+    las12.Read( fileStream );
+    fileStream.close();
 
-    // just print 
-    cout << pubHeader.ToString() << endl;
+//    // just print 
+    cout << las12.ToString() << endl;
 
 }
